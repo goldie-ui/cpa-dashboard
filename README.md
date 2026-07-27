@@ -2,7 +2,9 @@
 
 CPA 수험에 자주 쓰는 사이트를 한 곳에 모아둔 개인용 링크 대시보드입니다.
 
-**바로가기:** https://goldie-ui.github.io/cpa-dashboard/
+**바로가기:** https://cpa-dashboard-chi.vercel.app
+
+미러: https://goldie-ui.github.io/cpa-dashboard/
 
 ## 기능
 
