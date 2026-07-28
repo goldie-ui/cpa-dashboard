@@ -19,13 +19,14 @@
     --ink:#0e1a16; --ink-2:#48584f; --ink-3:#7a8880;
     --accent:#0c8f62; --accent-2:#0a7350; --accent-glow:rgba(12,143,98,.26);
     --gold:#a9741a;
+    --lv0:rgba(14,58,44,.07);
+    --lv1:rgba(12,143,98,.24); --lv2:rgba(12,143,98,.44); --lv3:rgba(12,143,98,.66); --lv4:rgba(12,143,98,.92);
     --shadow:0 1px 2px rgba(10,38,28,.05),0 12px 30px -14px rgba(10,38,28,.26);
     --shadow-lift:0 2px 6px rgba(10,38,28,.07),0 24px 50px -18px rgba(10,38,28,.40);
     --r:16px; --r-sm:11px;
     --font:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",system-ui,"Segoe UI",Roboto,sans-serif;
     --mono:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   }
-  /* 다크: OS가 다크이고 사용자가 라이트를 강제하지 않은 경우 */
   @media (prefers-color-scheme:dark){
     :root:not([data-theme="light"]){
       --bg-0:#06100d; --bg-1:#08151a; --bg-2:#0d1210;
@@ -35,11 +36,12 @@
       --ink:#e9f2ee; --ink-2:#9db0a9; --ink-3:#6c7e78;
       --accent:#3ddb9f; --accent-2:#5ee7b3; --accent-glow:rgba(61,219,159,.30);
       --gold:#e8b45f;
+      --lv0:rgba(255,255,255,.055);
+      --lv1:rgba(61,219,159,.22); --lv2:rgba(61,219,159,.42); --lv3:rgba(61,219,159,.66); --lv4:rgba(61,219,159,.95);
       --shadow:0 1px 2px rgba(0,0,0,.35),0 14px 34px -16px rgba(0,0,0,.7);
       --shadow-lift:0 2px 8px rgba(0,0,0,.4),0 28px 56px -20px rgba(0,0,0,.85);
     }
   }
-  /* 토글로 다크 강제 */
   :root[data-theme="dark"]{
     --bg-0:#06100d; --bg-1:#08151a; --bg-2:#0d1210;
     --blob-a:rgba(45,215,155,.24); --blob-b:rgba(66,152,214,.20); --blob-c:rgba(236,172,78,.15);
@@ -48,6 +50,8 @@
     --ink:#e9f2ee; --ink-2:#9db0a9; --ink-3:#6c7e78;
     --accent:#3ddb9f; --accent-2:#5ee7b3; --accent-glow:rgba(61,219,159,.30);
     --gold:#e8b45f;
+    --lv0:rgba(255,255,255,.055);
+    --lv1:rgba(61,219,159,.22); --lv2:rgba(61,219,159,.42); --lv3:rgba(61,219,159,.66); --lv4:rgba(61,219,159,.95);
     --shadow:0 1px 2px rgba(0,0,0,.35),0 14px 34px -16px rgba(0,0,0,.7);
     --shadow-lift:0 2px 8px rgba(0,0,0,.4),0 28px 56px -20px rgba(0,0,0,.85);
   }
@@ -59,7 +63,6 @@
     background:linear-gradient(160deg,var(--bg-0) 0%,var(--bg-1) 55%,var(--bg-2) 100%);
     background-attachment:fixed;-webkit-font-smoothing:antialiased;overflow-x:hidden;
   }
-  /* 오로라 */
   .aurora{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
   .aurora i{position:absolute;display:block;border-radius:50%;filter:blur(90px);opacity:.9}
   .aurora .a{width:56vw;height:56vw;left:-14vw;top:-18vw;background:radial-gradient(circle,var(--blob-a),transparent 68%);animation:drift1 34s ease-in-out infinite}
@@ -71,7 +74,6 @@
 
   .wrap{max-width:1120px;margin:0 auto;padding:clamp(18px,3.6vw,40px) clamp(14px,3.6vw,30px) 80px}
 
-  /* 유리 표면 공통 */
   .glass{
     background:var(--glass);border:1px solid var(--glass-brd);border-radius:var(--r);
     -webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5);
@@ -79,8 +81,7 @@
   }
 
   /* ── 헤더 ── */
-  .top{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;
-    padding:16px 20px;margin-bottom:18px}
+  .top{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;padding:16px 20px}
   .brand .eyebrow{margin:0 0 5px;font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;
     text-transform:uppercase;color:var(--accent);font-weight:600}
   .brand h1{margin:0;font-size:clamp(19px,3vw,25px);font-weight:800;letter-spacing:-.025em;text-wrap:balance}
@@ -101,7 +102,6 @@
   :root[data-theme="light"] .theme-btn .moon{display:block}
   :root[data-theme="light"] .theme-btn .sun{display:none}
 
-  /* D-day */
   .dday{padding:11px 16px;border-radius:var(--r-sm);border:1px solid var(--hair);background:var(--glass-2);min-width:150px}
   .dday .lbl{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3)}
   .dday .num{font-size:26px;font-weight:800;letter-spacing:-.03em;line-height:1.15;font-variant-numeric:tabular-nums;
@@ -111,9 +111,22 @@
     border-radius:7px;padding:3px 6px;font-family:var(--mono);font-size:11px;color-scheme:light dark}
   .dday .cap{font-size:10.5px;color:var(--ink-3);margin-top:3px}
 
+  /* ── 명언 바 ── */
+  .quote{margin-top:14px;padding:13px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;
+    transition:border-color .18s,transform .18s}
+  .quote:hover{border-color:var(--accent-glow);transform:translateY(-1px)}
+  .quote .mark{font-family:Georgia,"Times New Roman",serif;font-size:30px;line-height:.8;color:var(--accent);
+    opacity:.5;flex-shrink:0;margin-top:-4px}
+  .quote .body{flex:1;min-width:0;opacity:1;transition:opacity .5s ease}
+  .quote .body.fade{opacity:0}
+  .quote .txt{font-size:14.5px;font-weight:600;letter-spacing:-.01em;line-height:1.45;text-wrap:balance}
+  .quote .by{font-size:11px;color:var(--ink-3);margin-top:3px}
+  .quote .next{font-family:var(--mono);font-size:10px;color:var(--ink-3);flex-shrink:0;opacity:0;transition:opacity .18s}
+  .quote:hover .next{opacity:1}
+
   /* ── 도구 3종 ── */
-  .decks{display:grid;grid-template-columns:repeat(auto-fit,minmax(272px,1fr));gap:14px;margin-bottom:26px}
-  .deck{padding:16px 18px 17px;display:flex;flex-direction:column;gap:12px;min-height:214px}
+  .decks{display:grid;grid-template-columns:repeat(auto-fit,minmax(272px,1fr));gap:14px;margin-top:16px}
+  .deck{padding:16px 18px 17px;display:flex;flex-direction:column;gap:11px;min-height:236px}
   .deck-hd{display:flex;align-items:center;justify-content:space-between;gap:8px}
   .deck-hd h2{margin:0;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
   .deck-hd .meta{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
@@ -130,6 +143,7 @@
   .ring .clock{font-family:var(--mono);font-size:21px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
   .ring .mode{font-size:9.5px;letter-spacing:.14em;color:var(--ink-3);margin-top:1px}
   .timer-ctl{display:flex;flex-direction:column;gap:7px;flex:1;min-width:0}
+
   .btn{border:1px solid var(--hair);background:var(--glass-2);color:var(--ink);border-radius:9px;
     padding:8px 12px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;
     transition:border-color .15s,background .15s,color .15s,transform .12s;text-align:center}
@@ -145,6 +159,14 @@
   :root[data-theme="light"] .btn.primary,
   :root[data-theme="light"] .btn.primary:hover{color:#fff}
   .btn.ghost{font-size:12px;padding:6px 10px;font-weight:500;color:var(--ink-2)}
+
+  .sel{border:1px solid var(--hair);background:var(--glass-2);color:var(--ink);border-radius:9px;
+    padding:7px 10px;font-family:inherit;font-size:12.5px;cursor:pointer;width:100%;
+    appearance:none;-webkit-appearance:none;background-image:none}
+  .sel:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+  .sel-wrap{position:relative}
+  .sel-wrap::after{content:"▾";position:absolute;right:11px;top:50%;transform:translateY(-50%);
+    color:var(--ink-3);font-size:10px;pointer-events:none}
   .tomatoes{display:flex;flex-wrap:wrap;gap:3px;font-size:12px;line-height:1;min-height:14px}
 
   /* 체크리스트 */
@@ -156,7 +178,7 @@
     width:36px;flex-shrink:0;cursor:pointer;font-size:17px;line-height:1;transition:color .15s,border-color .15s}
   .todo-add button:hover{color:var(--accent);border-color:var(--accent-glow)}
   .todo-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px;
-    flex:1;overflow-y:auto;max-height:132px}
+    flex:1;overflow-y:auto;max-height:150px}
   .todo-list li{display:flex;align-items:flex-start;gap:8px;padding:5px 4px;border-radius:7px;transition:background .15s}
   .todo-list li:hover{background:var(--glass-2)}
   .todo-list input[type=checkbox]{margin:2px 0 0;width:15px;height:15px;accent-color:var(--accent);flex-shrink:0;cursor:pointer}
@@ -172,15 +194,67 @@
   .todo-foot input[type=checkbox]{width:13px;height:13px;accent-color:var(--accent);cursor:pointer}
 
   /* 메모 */
-  .memo textarea{flex:1;width:100%;min-height:130px;resize:vertical;border:1px solid var(--hair);
+  .memo textarea{flex:1;width:100%;min-height:150px;resize:vertical;border:1px solid var(--hair);
     background:var(--glass-2);color:var(--ink);border-radius:10px;padding:11px 12px;
     font-family:inherit;font-size:13px;line-height:1.6}
   .memo textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
   .saved{font-family:var(--mono);font-size:10px;color:var(--accent);opacity:0;transition:opacity .3s}
   .saved.on{opacity:1}
 
+  /* ── 공부 기록 (잔디밭) ── */
+  .log{margin-top:14px;padding:17px 19px 18px;display:flex;flex-direction:column;gap:15px}
+  .log-hd{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:10px}
+  .log-hd h2{margin:0;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+  .stats{display:flex;flex-wrap:wrap;gap:8px}
+  .stat{padding:7px 13px;border-radius:10px;border:1px solid var(--hair);background:var(--glass-2);min-width:82px}
+  .stat .k{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+  .stat .v{font-size:16px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin-top:1px}
+  .stat .v.hl{color:var(--accent)}
+
+  .heat-scroll{overflow-x:auto;padding-bottom:4px}
+  .heat{display:inline-flex;gap:7px;min-width:min-content}
+  .heat-days{display:grid;grid-template-rows:repeat(7,13px);gap:3px;padding-top:15px;flex-shrink:0}
+  .heat-days span{font-family:var(--mono);font-size:8.5px;color:var(--ink-3);line-height:13px;text-align:right;width:16px}
+  .heat-main{display:flex;flex-direction:column;gap:3px}
+  .heat-months{display:grid;grid-auto-flow:column;gap:3px;height:12px}
+  .heat-months span{font-family:var(--mono);font-size:8.5px;color:var(--ink-3);white-space:nowrap;width:13px}
+  .heat-grid{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,13px);gap:3px}
+  .cell{width:13px;height:13px;border-radius:3px;background:var(--lv0);transition:transform .12s,box-shadow .12s}
+  .cell[data-l="1"]{background:var(--lv1)} .cell[data-l="2"]{background:var(--lv2)}
+  .cell[data-l="3"]{background:var(--lv3)} .cell[data-l="4"]{background:var(--lv4)}
+  .cell.future{opacity:0;pointer-events:none}
+  .cell:hover{transform:scale(1.35);box-shadow:0 0 0 1.5px var(--accent)}
+  .heat-legend{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--ink-3);
+    font-family:var(--mono);justify-content:flex-end;margin-top:2px}
+  .heat-legend .cell{width:11px;height:11px}
+
+  .subs{display:flex;flex-direction:column;gap:7px}
+  .subs-hd{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .subs-hd .t{font-size:11.5px;font-weight:700;color:var(--ink-2)}
+  .tabs{display:flex;gap:3px;border:1px solid var(--hair);border-radius:9px;padding:2px;background:var(--glass-2)}
+  .tabs button{border:none;background:none;color:var(--ink-3);font-family:inherit;font-size:11px;font-weight:600;
+    padding:4px 10px;border-radius:7px;cursor:pointer;transition:background .15s,color .15s}
+  .tabs button.on{background:var(--accent);color:#fff}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tabs button.on{color:#04211a}}
+  :root[data-theme="dark"] .tabs button.on{color:#04211a}
+  :root[data-theme="light"] .tabs button.on{color:#fff}
+
+  .bar-row{display:grid;grid-template-columns:96px 1fr 62px;align-items:center;gap:10px}
+  .bar-row .nm{font-size:12px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bar-track{height:9px;border-radius:5px;background:var(--lv0);overflow:hidden}
+  .bar-fill{height:100%;border-radius:5px;transition:width .5s cubic-bezier(.2,.8,.3,1)}
+  .bar-row .vl{font-family:var(--mono);font-size:11px;color:var(--ink-3);text-align:right;font-variant-numeric:tabular-nums}
+  .subs-empty{font-size:12px;color:var(--ink-3);padding:8px 2px}
+
+  .log-add{display:flex;flex-wrap:wrap;gap:7px;align-items:center;padding-top:12px;border-top:1px solid var(--hair)}
+  .log-add .lb{font-size:11px;color:var(--ink-3);white-space:nowrap}
+  .log-add .sel-wrap{flex:1;min-width:120px}
+  .log-add input{width:78px;border:1px solid var(--hair);background:var(--glass-2);color:var(--ink);
+    border-radius:9px;padding:7px 10px;font-family:var(--mono);font-size:12.5px}
+  .log-add input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+
   /* ── 검색 ── */
-  .toolbar{display:flex;flex-wrap:wrap;gap:11px;align-items:center;margin-bottom:8px}
+  .toolbar{display:flex;flex-wrap:wrap;gap:11px;align-items:center;margin-top:26px;margin-bottom:8px}
   .search{flex:1;min-width:210px;position:relative}
   .search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:16px;height:16px;
     stroke:var(--ink-3);fill:none;pointer-events:none;z-index:1}
@@ -228,17 +302,15 @@
   footer .priv{display:inline-flex;align-items:center;gap:6px}
   footer svg{width:13px;height:13px;stroke:var(--ink-3);fill:none;flex-shrink:0}
 
-  a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
   @media (max-width:560px){
     .top{padding:14px 16px}
     .head-right{width:100%;justify-content:space-between}
     .dday{flex:1}
-    .timer-body{gap:12px}
+    .bar-row{grid-template-columns:78px 1fr 54px;gap:8px}
   }
-  @media (prefers-reduced-motion:reduce){
-    *{transition:none!important;animation:none!important}
-  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
@@ -267,6 +339,16 @@
     </div>
   </header>
 
+  <!-- 명언 -->
+  <div class="quote glass" id="quote" role="button" tabindex="0" aria-label="다음 문구 보기" title="눌러서 다음 문구">
+    <span class="mark" aria-hidden="true">&ldquo;</span>
+    <div class="body" id="qBody">
+      <div class="txt" id="qTxt"></div>
+      <div class="by" id="qBy"></div>
+    </div>
+    <span class="next" aria-hidden="true">다음 →</span>
+  </div>
+
   <div class="decks">
 
     <!-- 타이머 -->
@@ -291,6 +373,9 @@
           <button class="btn ghost" id="tmReset" type="button">처음으로</button>
           <button class="btn ghost" id="tmSkip" type="button">휴식으로 &rarr;</button>
         </div>
+      </div>
+      <div class="sel-wrap">
+        <select class="sel" id="tmSubject" aria-label="공부 과목"></select>
       </div>
       <div class="tomatoes" id="tmDots" aria-hidden="true"></div>
     </div>
@@ -323,6 +408,54 @@
 
   </div>
 
+  <!-- 공부 기록 -->
+  <div class="log glass">
+    <div class="log-hd">
+      <h2>공부 기록</h2>
+      <div class="stats">
+        <div class="stat"><div class="k">오늘</div><div class="v hl" id="stToday">0분</div></div>
+        <div class="stat"><div class="k">이번 주</div><div class="v" id="stWeek">0분</div></div>
+        <div class="stat"><div class="k">연속</div><div class="v" id="stStreak">0일</div></div>
+        <div class="stat"><div class="k">누적</div><div class="v" id="stTotal">0분</div></div>
+      </div>
+    </div>
+
+    <div class="heat-scroll">
+      <div class="heat">
+        <div class="heat-days"><span></span><span>월</span><span></span><span>수</span><span></span><span>금</span><span></span></div>
+        <div class="heat-main">
+          <div class="heat-months" id="heatMonths"></div>
+          <div class="heat-grid" id="heatGrid"></div>
+        </div>
+      </div>
+    </div>
+    <div class="heat-legend">
+      적음
+      <span class="cell" data-l="0"></span><span class="cell" data-l="1"></span>
+      <span class="cell" data-l="2"></span><span class="cell" data-l="3"></span><span class="cell" data-l="4"></span>
+      많음
+    </div>
+
+    <div class="subs">
+      <div class="subs-hd">
+        <span class="t">과목별 공부시간</span>
+        <div class="tabs" id="subTabs">
+          <button data-range="week" class="on" type="button">이번 주</button>
+          <button data-range="all" type="button">전체</button>
+        </div>
+      </div>
+      <div id="subBars"></div>
+    </div>
+
+    <div class="log-add">
+      <span class="lb">직접 기록</span>
+      <div class="sel-wrap"><select class="sel" id="addSubject" aria-label="기록할 과목"></select></div>
+      <input id="addMin" type="number" min="1" max="1440" step="5" placeholder="분" aria-label="공부한 분">
+      <button class="btn" id="addBtn" type="button">추가</button>
+      <button class="btn ghost" id="undoBtn" type="button" style="display:none">되돌리기</button>
+    </div>
+  </div>
+
   <div class="toolbar">
     <div class="search">
       <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
@@ -338,7 +471,7 @@
   <footer class="glass">
     <span class="priv">
       <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
-      즐겨찾기 · 타이머 기록 · 할 일 · 메모는 모두 이 브라우저에만 저장돼요
+      공부 기록 · 즐겨찾기 · 할 일 · 메모는 모두 이 브라우저에만 저장돼요
     </span>
     <span>사이트 추가·수정은 언제든 요청하세요</span>
   </footer>
@@ -367,16 +500,52 @@
       {name:"독회사 (독하게 회계사)", url:"https://cafe.naver.com/dokhoe", desc:"수험생 커뮤니티 (네이버 카페)"},
     ]},
   ];
-  /* ──────────────────────────────────────────────────────── */
+
+  /* ─────────── 과목: 추가·삭제 자유 ─────────── */
+  const SUBJECTS = [
+    {name:"재무회계",     color:"#3ddb9f"},
+    {name:"원가관리회계", color:"#4fb6e8"},
+    {name:"세법",         color:"#e8b45f"},
+    {name:"재무관리",     color:"#a98ce8"},
+    {name:"회계감사",     color:"#ec8b7a"},
+    {name:"상법",         color:"#6fd3c4"},
+    {name:"경제학",       color:"#d9c25e"},
+    {name:"경영학",       color:"#8fc46b"},
+    {name:"기타",         color:"#9aa8a2"},
+  ];
+
+  /* ─────────── 명언 · 응원 문구 ─────────── */
+  const QUOTES = [
+    {t:"오늘 푼 한 문제가 내년의 합격증이 된다."},
+    {t:"속도보다 방향, 방향보다 꾸준함."},
+    {t:"이해가 안 되면 열 번 보면 된다. 열한 번째에 보인다."},
+    {t:"막히는 단원이 실력이 가장 많이 느는 단원이다."},
+    {t:"완벽한 1회독보다 끝까지 간 1회독이 낫다."},
+    {t:"합격은 재능이 아니라 출석이다."},
+    {t:"오답노트는 미래의 나에게 보내는 편지."},
+    {t:"회계는 암기가 아니라 흐름이다. 흐름을 따라가자."},
+    {t:"어제의 나보다 딱 한 장 더."},
+    {t:"쉬는 것도 계획이다. 죄책감 없이 쉬자."},
+    {t:"모르는 걸 표시해두는 것도 공부다."},
+    {t:"지금 덮으면 내일 두 배로 무거워진다."},
+    {t:"슬럼프는 실력이 자라는 소리다."},
+    {t:"천 리 길도 한 걸음부터.", by:"속담"},
+    {t:"기회는 준비된 자에게 온다.", by:"루이 파스퇴르"},
+  ];
+  const QUOTE_MS = 20000;   // 문구 교체 주기
+  /* ──────────────────────────────────────── */
 
   const $ = s => document.querySelector(s);
   const LS = {pin:"cpa_dash_pins_v1", dday:"cpa_dash_dday_v1", theme:"cpa_theme_v1",
-              tm:"cpa_timer_v1", td:"cpa_todo_v1", memo:"cpa_memo_v1"};
-  const today = () => new Date().toLocaleDateString("sv-SE");   // 로컬 기준 YYYY-MM-DD
+              tm:"cpa_timer_v1", td:"cpa_todo_v1", memo:"cpa_memo_v1",
+              log:"cpa_log_v1", subj:"cpa_subject_v1"};
+  const ymd  = d => d.toLocaleDateString("sv-SE");        // 로컬 기준 YYYY-MM-DD
+  const today = () => ymd(new Date());
   const load = (k,d) => { try{ const v = localStorage.getItem(k); return v===null ? d : JSON.parse(v); }catch(e){ return d; } };
   const save = (k,v) => { try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} };
   const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const domain = u => { try{ return new URL(u).hostname.replace(/^www\./,""); }catch(e){ return ""; } };
+  const hm = m => m <= 0 ? "0분" : (m >= 60 ? Math.floor(m/60) + "시간" + (m%60 ? " " + (m%60) + "분" : "") : m + "분");
 
   /* ── 테마 ── */
   (function(){
@@ -400,6 +569,29 @@
       : h < 18 ? "오후도 힘내요. 잠깐 스트레칭 어때요 🌿"
       : h < 23 ? "저녁이에요. 오늘 할 일 마무리해볼까요 🌆"
       :          "늦은 밤이에요. 곧 쉬어가요 🌙";
+  })();
+
+  /* ── 명언 로테이션 ── */
+  (function(){
+    let qi = Math.floor(Math.random() * QUOTES.length);
+    let qTimer = null;
+    function paint(){
+      const q = QUOTES[qi];
+      $("#qTxt").textContent = q.t;
+      $("#qBy").textContent = q.by ? "— " + q.by : "";
+    }
+    function next(){
+      const b = $("#qBody");
+      b.classList.add("fade");
+      setTimeout(() => { qi = (qi + 1) % QUOTES.length; paint(); b.classList.remove("fade"); }, 500);
+    }
+    function restart(){ clearInterval(qTimer); qTimer = setInterval(next, QUOTE_MS); }
+    paint(); restart();
+    const el = $("#quote");
+    el.addEventListener("click", () => { next(); restart(); });
+    el.addEventListener("keydown", e => {
+      if(e.key === "Enter" || e.key === " "){ e.preventDefault(); next(); restart(); }
+    });
   })();
 
   /* ── 링크 목록 ── */
@@ -475,6 +667,140 @@
     i.focus();
   });
 
+  /* ── 공부 기록 ── */
+  let log = load(LS.log, null);
+  if(!log || typeof log !== "object" || Array.isArray(log)) log = {};
+  let lastAdd = null;          // 되돌리기용
+  let subRange = "week";
+
+  const dayTotal = d => Object.values(log[d] || {}).reduce((a,b) => a+b, 0);
+
+  function addMinutes(subject, mins, date){
+    if(!(mins > 0)) return;
+    const d = date || today();
+    if(!log[d]) log[d] = {};
+    log[d][subject] = (log[d][subject] || 0) + mins;
+    save(LS.log, log);
+    lastAdd = {d, subject, mins};
+    $("#undoBtn").style.display = "";
+    paintLog();
+  }
+  function undoAdd(){
+    if(!lastAdd) return;
+    const {d, subject, mins} = lastAdd;
+    if(log[d] && log[d][subject]){
+      log[d][subject] -= mins;
+      if(log[d][subject] <= 0) delete log[d][subject];
+      if(!Object.keys(log[d]).length) delete log[d];
+      save(LS.log, log);
+    }
+    lastAdd = null; $("#undoBtn").style.display = "none";
+    paintLog();
+  }
+
+  function weekStart(){                    // 이번 주 월요일
+    const d = new Date(); d.setHours(0,0,0,0);
+    const off = (d.getDay() + 6) % 7;      // 월=0
+    d.setDate(d.getDate() - off);
+    return d;
+  }
+  function streak(){
+    let n = 0; const d = new Date(); d.setHours(0,0,0,0);
+    if(dayTotal(ymd(d)) === 0) d.setDate(d.getDate() - 1);   // 오늘 아직이면 어제부터
+    while(dayTotal(ymd(d)) > 0){ n++; d.setDate(d.getDate() - 1); }
+    return n;
+  }
+  function level(m){ return m === 0 ? 0 : m < 30 ? 1 : m < 60 ? 2 : m < 120 ? 3 : 4; }
+
+  const WEEKS = 18;
+  function paintHeat(){
+    const end = new Date(); end.setHours(0,0,0,0);
+    end.setDate(end.getDate() + (7 - ((end.getDay() + 6) % 7) - 1));   // 이번 주 일요일
+    const start = new Date(end); start.setDate(start.getDate() - (WEEKS*7 - 1));
+
+    const cells = [], months = [];
+    let lastMonth = -1;
+    const todayStr = today();
+
+    for(let w = 0; w < WEEKS; w++){
+      const colFirst = new Date(start); colFirst.setDate(start.getDate() + w*7);
+      const mo = colFirst.getMonth();
+      if(mo !== lastMonth && colFirst.getDate() <= 7){
+        months.push('<span>' + (mo+1) + '월</span>'); lastMonth = mo;
+      } else months.push('<span></span>');
+
+      for(let r = 0; r < 7; r++){
+        const cur = new Date(start); cur.setDate(start.getDate() + w*7 + r);
+        const key = ymd(cur), mins = dayTotal(key), future = key > todayStr;
+        const parts = Object.entries(log[key] || {}).sort((a,b) => b[1]-a[1])
+          .map(([s,m]) => s + " " + hm(m)).join(", ");
+        const label = (cur.getMonth()+1) + "월 " + cur.getDate() + "일 · " + (mins ? parts : "기록 없음");
+        cells.push('<div class="cell' + (future?" future":"") + '" data-l="' + level(mins) + '" title="' + esc(label) + '"></div>');
+      }
+    }
+    // 열 우선(grid-auto-flow:column)이라 셀 순서 = 주 → 요일
+    $("#heatGrid").innerHTML = cells.join("");
+    $("#heatMonths").innerHTML = months.join("");
+    $("#heatMonths").style.gridTemplateColumns = "repeat(" + WEEKS + ",13px)";
+  }
+
+  function paintSubs(){
+    const from = subRange === "week" ? ymd(weekStart()) : "0000-00-00";
+    const tot = {};
+    Object.keys(log).forEach(d => {
+      if(d < from) return;
+      Object.entries(log[d]).forEach(([s,m]) => { tot[s] = (tot[s]||0) + m; });
+    });
+    const rows = Object.entries(tot).sort((a,b) => b[1]-a[1]);
+    if(!rows.length){
+      $("#subBars").innerHTML = '<div class="subs-empty">아직 기록이 없어요. 타이머를 돌리거나 아래에서 직접 기록해보세요.</div>';
+      return;
+    }
+    const max = rows[0][1];
+    $("#subBars").innerHTML = rows.map(([s,m]) => {
+      const c = (SUBJECTS.find(x => x.name === s) || {}).color || "#9aa8a2";
+      return '<div class="bar-row"><span class="nm">' + esc(s) + '</span>'
+        + '<div class="bar-track"><div class="bar-fill" style="width:' + (m/max*100) + '%;background:' + c + '"></div></div>'
+        + '<span class="vl">' + hm(m) + '</span></div>';
+    }).join("");
+  }
+
+  function paintLog(){
+    const ws = ymd(weekStart());
+    let week = 0, total = 0;
+    Object.keys(log).forEach(d => { const t = dayTotal(d); total += t; if(d >= ws) week += t; });
+    $("#stToday").textContent  = hm(dayTotal(today()));
+    $("#stWeek").textContent   = hm(week);
+    $("#stStreak").textContent = streak() + "일";
+    $("#stTotal").textContent  = hm(total);
+    paintHeat(); paintSubs();
+  }
+
+  // 과목 셀렉트 채우기
+  (function(){
+    const opts = SUBJECTS.map(s => '<option value="' + esc(s.name) + '">' + esc(s.name) + '</option>').join("");
+    $("#tmSubject").innerHTML = opts;
+    $("#addSubject").innerHTML = opts;
+    const saved = load(LS.subj, SUBJECTS[0].name);
+    if(SUBJECTS.some(s => s.name === saved)){ $("#tmSubject").value = saved; $("#addSubject").value = saved; }
+    $("#tmSubject").addEventListener("change", e => save(LS.subj, e.target.value));
+  })();
+
+  $("#addBtn").addEventListener("click", () => {
+    const m = parseInt($("#addMin").value, 10);
+    if(!(m > 0)){ $("#addMin").focus(); return; }
+    addMinutes($("#addSubject").value, Math.min(m, 1440));
+    $("#addMin").value = "";
+  });
+  $("#addMin").addEventListener("keydown", e => { if(e.key === "Enter") $("#addBtn").click(); });
+  $("#undoBtn").addEventListener("click", undoAdd);
+  $("#subTabs").addEventListener("click", e => {
+    const b = e.target.closest("button"); if(!b) return;
+    subRange = b.dataset.range;
+    [...$("#subTabs").children].forEach(x => x.classList.toggle("on", x === b));
+    paintSubs();
+  });
+
   /* ── 포모도로 타이머 ── */
   const FOCUS = 25*60, BREAK = 5*60, CIRC = 2*Math.PI*46;
   let tm = load(LS.tm, null);
@@ -500,7 +826,10 @@
   function stopTimer(){ ticking = false; if(iv){ clearInterval(iv); iv = null; } paintTimer(); }
   function switchMode(auto){
     if(mode === "focus"){
-      if(auto){ tm.done++; save(LS.tm, tm); }
+      if(auto){
+        tm.done++; save(LS.tm, tm);
+        addMinutes($("#tmSubject").value, FOCUS/60);   // 잔디밭에 25분 적립
+      }
       mode = "break"; left = BREAK;
     } else { mode = "focus"; left = FOCUS; }
     stopTimer();
@@ -573,7 +902,10 @@
   });
 
   /* ── 시작 ── */
-  render(); dday(); paintTimer(); paintTodo();
+  render(); dday(); paintTimer(); paintTodo(); paintLog();
+  // 잔디밭은 최신 주가 보이도록 오른쪽 끝으로
+  const hs = document.querySelector(".heat-scroll");
+  hs.scrollLeft = hs.scrollWidth;
 </script>
 </body>
 </html>
