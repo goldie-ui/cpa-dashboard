@@ -301,6 +301,17 @@
     justify-content:space-between;align-items:center;font-size:11.5px;color:var(--ink-3)}
   footer .priv{display:inline-flex;align-items:center;gap:6px}
   footer svg{width:13px;height:13px;stroke:var(--ink-3);fill:none;flex-shrink:0}
+  .backup{display:flex;gap:6px;flex-shrink:0}
+  .backup .btn{font-size:11.5px;padding:5px 11px;font-weight:600}
+
+  /* 토스트 */
+  .toast{position:fixed;left:50%;bottom:26px;z-index:50;max-width:min(88vw,460px);
+    transform:translateX(-50%) translateY(10px);opacity:0;pointer-events:none;
+    padding:12px 18px;border-radius:12px;font-size:13px;line-height:1.5;white-space:pre-line;
+    background:var(--glass);border:1px solid var(--glass-brd);color:var(--ink);
+    -webkit-backdrop-filter:blur(20px) saturate(1.6);backdrop-filter:blur(20px) saturate(1.6);
+    box-shadow:var(--shadow-lift);transition:opacity .25s,transform .25s}
+  .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 
   a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
@@ -473,9 +484,15 @@
       <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
       공부 기록 · 즐겨찾기 · 할 일 · 메모는 모두 이 브라우저에만 저장돼요
     </span>
-    <span>사이트 추가·수정은 언제든 요청하세요</span>
+    <div class="backup">
+      <button class="btn ghost" id="expBtn" type="button">백업 내보내기</button>
+      <button class="btn ghost" id="impBtn" type="button">불러오기</button>
+      <input type="file" id="impFile" accept="application/json,.json" hidden>
+    </div>
   </footer>
 </div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
   /* ─────────── 사이트 목록: 여기만 고치면 됩니다 ─────────── */
@@ -897,6 +914,111 @@
       s.classList.add("on");
       setTimeout(() => s.classList.remove("on"), 1400);
     }, 500);
+  });
+
+  /* ── 백업 내보내기 / 불러오기 ── */
+  let toastT = null;
+  function toast(msg){
+    const el = $("#toast");
+    el.textContent = msg; el.classList.add("on");
+    clearTimeout(toastT);
+    toastT = setTimeout(() => el.classList.remove("on"), 4500);
+  }
+
+  $("#expBtn").addEventListener("click", () => {
+    const data = {
+      app:"cpa-dashboard", version:1, exportedAt:new Date().toISOString(),
+      log:load(LS.log, {}), pins:load(LS.pin, []), todo:load(LS.td, null),
+      memo:load(LS.memo, ""), dday:load(LS.dday, null),
+      timer:load(LS.tm, null), subject:load(LS.subj, null)
+    };
+    const name = "cpa-dashboard-backup-" + today() + ".json";
+    const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], {type:"application/json"}));
+    const a = document.createElement("a");
+    a.href = url; a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    const days = Object.keys(data.log).length;
+    toast("백업 파일을 저장했어요 · 공부 기록 " + days + "일치\n" + name);
+  });
+
+  function mergeBackup(data){
+    const s = {mins:0, pins:0, todos:0, memo:false};
+
+    const inLog = (data.log && typeof data.log === "object") ? data.log : {};
+    Object.keys(inLog).forEach(d => {
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(d)) return;
+      const src = inLog[d];
+      if(!src || typeof src !== "object") return;
+      if(!log[d]) log[d] = {};
+      Object.entries(src).forEach(([sub, m]) => {
+        const n = Number(m);
+        if(!(n > 0)) return;
+        const cur = log[d][sub] || 0;
+        if(n > cur){ log[d][sub] = n; s.mins += n - cur; }   // 더 큰 값만 — 중복 합산 없음
+      });
+      if(!Object.keys(log[d]).length) delete log[d];
+    });
+    save(LS.log, log);
+
+    (Array.isArray(data.pins) ? data.pins : []).forEach(u => {
+      if(typeof u === "string" && !pins.has(u)){ pins.add(u); s.pins++; }
+    });
+    save(LS.pin, [...pins]);
+
+    if(data.todo && Array.isArray(data.todo.items)){
+      const have = new Set(td.items.map(t => t.text));
+      data.todo.items.forEach(t => {
+        if(t && typeof t.text === "string" && t.text && !have.has(t.text)){
+          td.items.push({text:t.text, done:!!t.done}); have.add(t.text); s.todos++;
+        }
+      });
+      save(LS.td, td);
+    }
+
+    const inMemo = typeof data.memo === "string" ? data.memo : "";
+    if(inMemo && !memo.value.includes(inMemo)){   // 이미 들어있으면 다시 붙이지 않음
+      memo.value = memo.value ? memo.value + "\n\n──── 불러온 메모 ────\n" + inMemo : inMemo;
+      save(LS.memo, memo.value); s.memo = true;
+    }
+
+    if(!load(LS.dday, null) && typeof data.dday === "string" && data.dday) save(LS.dday, data.dday);
+
+    if(data.timer && data.timer.date === today() && Number(data.timer.done) > tm.done){
+      tm.done = Number(data.timer.done); save(LS.tm, tm);
+    }
+    return s;
+  }
+
+  $("#impBtn").addEventListener("click", () => $("#impFile").click());
+  $("#impFile").addEventListener("change", e => {
+    const f = e.target.files[0];
+    if(!f) return;
+    const reader = new FileReader();
+    reader.onerror = () => { toast("파일을 읽지 못했어요."); e.target.value = ""; };
+    reader.onload = () => {
+      let data;
+      try { data = JSON.parse(reader.result); }
+      catch(err){ toast("파일을 읽지 못했어요.\n올바른 백업 파일인지 확인해주세요."); e.target.value = ""; return; }
+      if(!data || data.app !== "cpa-dashboard"){
+        toast("이 대시보드의 백업 파일이 아니에요."); e.target.value = ""; return;
+      }
+      const days = Object.keys((data.log && typeof data.log === "object") ? data.log : {}).length;
+      const ok = confirm(
+        "백업을 불러올까요? (공부 기록 " + days + "일치)\n\n"
+        + "• 공부 기록: 날짜·과목별로 더 큰 값만 남겨요 (중복 합산 안 됨)\n"
+        + "• 즐겨찾기 · 할 일: 없는 것만 추가돼요\n"
+        + "• 메모: 비어 있으면 채우고, 내용이 다르면 아래에 이어붙여요\n\n"
+        + "이 기기의 기존 기록은 지워지지 않아요."
+      );
+      if(!ok){ e.target.value = ""; return; }
+      const s = mergeBackup(data);
+      render(); dday(); paintTimer(); paintTodo(); paintLog();
+      toast("불러왔어요.\n공부 " + hm(s.mins) + " · 즐겨찾기 " + s.pins + "개 · 할 일 " + s.todos + "개 추가"
+            + (s.memo ? " · 메모 합침" : ""));
+      e.target.value = "";
+    };
+    reader.readAsText(f);
   });
 
   /* ── 시작 ── */
