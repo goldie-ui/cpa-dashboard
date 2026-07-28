@@ -2,9 +2,9 @@
 
 CPA 수험에 자주 쓰는 사이트와 공부 도구를 한 곳에 모아둔 개인용 대시보드입니다.
 
-**바로가기:** https://cpa-dashboard-chi.vercel.app
+**바로가기:** https://cpa-goldie.vercel.app
 
-미러: https://goldie-ui.github.io/cpa-dashboard/
+미러(동기화 미지원): https://goldie-ui.github.io/cpa-dashboard/
 
 ## 기능
 
