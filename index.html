@@ -311,8 +311,34 @@
     justify-content:space-between;align-items:center;font-size:11.5px;color:var(--ink-3)}
   footer .priv{display:inline-flex;align-items:center;gap:6px}
   footer svg{width:13px;height:13px;stroke:var(--ink-3);fill:none;flex-shrink:0}
-  .backup{display:flex;gap:6px;flex-shrink:0}
+  .backup{display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap}
   .backup .btn{font-size:11.5px;padding:5px 11px;font-weight:600}
+  .backup .btn .dot{display:inline-block;width:6px;height:6px;border-radius:50%;
+    background:var(--ink-3);margin-right:5px;vertical-align:middle;transition:background .2s}
+  .backup .btn .dot.on{background:var(--accent);box-shadow:0 0 6px var(--accent-glow)}
+  .backup .btn .dot.busy{background:var(--gold)}
+
+  /* 동기화 창 */
+  dialog{border:none;padding:0;background:transparent;max-width:min(94vw,430px);width:100%;color:var(--ink)}
+  dialog::backdrop{background:rgba(4,12,10,.55);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+  .sheet{padding:22px 22px 20px;display:flex;flex-direction:column;gap:14px;
+    font-family:var(--font);border-radius:18px}
+  .sheet h3{margin:0;font-size:16px;font-weight:800;letter-spacing:-.02em}
+  .sheet p{margin:0;font-size:12.5px;color:var(--ink-2);line-height:1.55}
+  .sheet .state{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink-2)}
+  .sheet .state .dot{width:7px;height:7px;border-radius:50%;background:var(--ink-3)}
+  .sheet .state .dot.on{background:var(--accent);box-shadow:0 0 6px var(--accent-glow)}
+  .keybox{display:flex;gap:6px;align-items:stretch}
+  .keybox input{flex:1;min-width:0;font-family:var(--mono);font-size:12px;letter-spacing:.02em;
+    border:1px solid var(--hair);background:var(--glass-2);color:var(--ink);border-radius:9px;padding:9px 11px}
+  .keybox input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+  .sheet .row{display:flex;gap:7px;flex-wrap:wrap}
+  .sheet .row .btn{flex:1;min-width:110px}
+  .sheet .sep{height:1px;background:var(--hair);margin:2px 0}
+  .sheet .note{font-size:11.5px;color:var(--ink-3);line-height:1.55;display:flex;gap:7px}
+  .sheet .note svg{width:13px;height:13px;stroke:var(--ink-3);fill:none;flex-shrink:0;margin-top:2px}
+  .sheet .danger{color:#d0453f;border-color:rgba(208,69,63,.35)}
+  .sheet .danger:hover{color:#d0453f;border-color:rgba(208,69,63,.6)}
 
   /* 토스트 */
   .toast{position:fixed;left:50%;bottom:26px;z-index:50;max-width:min(88vw,460px);
@@ -521,12 +547,56 @@
       공부 기록 · 즐겨찾기 · 할 일 · 메모는 모두 이 브라우저에만 저장돼요
     </span>
     <div class="backup">
+      <button class="btn ghost" id="syncBtn" type="button"><span class="dot" id="syncDot"></span>기기 동기화</button>
       <button class="btn ghost" id="expBtn" type="button">백업 내보내기</button>
       <button class="btn ghost" id="impBtn" type="button">불러오기</button>
       <input type="file" id="impFile" accept="application/json,.json" hidden>
     </div>
   </footer>
 </div>
+
+<dialog id="syncDlg" aria-label="기기 동기화">
+  <div class="sheet glass">
+    <h3>기기 동기화</h3>
+    <div class="state"><span class="dot" id="dlgDot"></span><span id="dlgState">연결 안 됨</span></div>
+
+    <div id="syncOff">
+      <p>이 기기에서 동기화를 시작하면 <b>동기화 코드</b>가 만들어져요.
+         다른 기기(폰·아이패드)에서 그 코드를 넣으면 기록이 하나로 합쳐집니다.</p>
+      <div class="row" style="margin-top:12px">
+        <button class="btn primary" id="syncStart" type="button">이 기기에서 시작</button>
+      </div>
+      <div class="sep" style="margin:14px 0"></div>
+      <p style="margin-bottom:8px">이미 코드가 있다면 붙여넣으세요.</p>
+      <div class="keybox">
+        <input id="syncJoinKey" type="text" placeholder="동기화 코드 붙여넣기" autocomplete="off" spellcheck="false" aria-label="동기화 코드">
+        <button class="btn" id="syncJoin" type="button">연결</button>
+      </div>
+    </div>
+
+    <div id="syncOn" style="display:none">
+      <p style="margin-bottom:8px">다른 기기에서 이 코드를 넣으면 연결돼요.</p>
+      <div class="keybox">
+        <input id="syncKeyView" type="text" readonly aria-label="내 동기화 코드">
+        <button class="btn" id="syncCopy" type="button">복사</button>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn primary" id="syncNowBtn" type="button">지금 동기화</button>
+        <button class="btn ghost danger" id="syncOffBtn" type="button">연결 해제</button>
+      </div>
+    </div>
+
+    <div class="sep"></div>
+    <div class="note">
+      <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.6v.6"/></svg>
+      <span>동기화를 켜면 공부 기록·할 일·메모가 서버에 저장돼요. 코드를 아는 사람은 내용을 볼 수 있으니 남에게 알려주지 마세요.
+        <b>공부 기록</b>은 양쪽을 합치고, <b>메모·할 일</b>은 마지막에 고친 쪽이 남아요.</span>
+    </div>
+    <div class="row">
+      <button class="btn ghost" id="syncClose" type="button">닫기</button>
+    </div>
+  </div>
+</dialog>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -589,7 +659,8 @@
   const $ = s => document.querySelector(s);
   const LS = {pin:"cpa_dash_pins_v1", dday:"cpa_dash_dday_v1", theme:"cpa_theme_v1",
               tm:"cpa_timer_v1", td:"cpa_todo_v1", memo:"cpa_memo_v1",
-              log:"cpa_log_v1", subj:"cpa_subject_v1"};
+              log:"cpa_log_v1", subj:"cpa_subject_v1",
+              sync:"cpa_sync_key_v1", stamps:"cpa_stamps_v1"};
   const ymd  = d => d.toLocaleDateString("sv-SE");        // 로컬 기준 YYYY-MM-DD
   const today = () => ymd(new Date());
   const load = (k,d) => { try{ const v = localStorage.getItem(k); return v===null ? d : JSON.parse(v); }catch(e){ return d; } };
@@ -597,6 +668,15 @@
   const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const domain = u => { try{ return new URL(u).hostname.replace(/^www\./,""); }catch(e){ return ""; } };
   const hm = m => m <= 0 ? "0분" : (m >= 60 ? Math.floor(m/60) + "시간" + (m%60 ? " " + (m%60) + "분" : "") : m + "분");
+
+  // 항목별 "마지막 수정 시각" — 동기화 충돌 시 최신 쪽을 남기는 기준
+  let stamps = load(LS.stamps, null);
+  if(!stamps || typeof stamps !== "object") stamps = {todo:0, memo:0, pins:0, dday:0};
+  function touch(field){
+    stamps[field] = Date.now();
+    save(LS.stamps, stamps);
+    schedulePush();
+  }
 
   /* ── 테마 ── */
   (function(){
@@ -693,7 +773,7 @@
     e.preventDefault();
     const k = b.dataset.key;
     pins.has(k) ? pins.delete(k) : pins.add(k);
-    save(LS.pin, [...pins]); render();
+    save(LS.pin, [...pins]); touch("pins"); render();
   });
   $("#q").addEventListener("input", render);
 
@@ -710,7 +790,7 @@
   }
   $("#ddayInput").addEventListener("change", e => {
     e.target.value ? save(LS.dday, e.target.value) : localStorage.removeItem(LS.dday);
-    dday();
+    touch("dday"); dday();
   });
   $("#ddayNum").addEventListener("click", () => {
     const i = $("#ddayInput");
@@ -733,6 +813,7 @@
     log[d][subject] = (log[d][subject] || 0) + mins;
     save(LS.log, log);
     lastAdd = {d, subject, mins};
+    schedulePush();
     $("#undoBtn").style.display = "";
     paintLog();
   }
@@ -746,6 +827,7 @@
       save(LS.log, log);
     }
     lastAdd = null; $("#undoBtn").style.display = "none";
+    schedulePush();
     paintLog();
   }
 
@@ -878,7 +960,7 @@
   function switchMode(auto){
     if(mode === "focus"){
       if(auto){
-        tm.done++; save(LS.tm, tm);
+        tm.done++; save(LS.tm, tm); schedulePush();
         addMinutes($("#tmSubject").value, FOCUS/60);   // 잔디밭에 25분 적립
       }
       mode = "break"; left = BREAK;
@@ -922,7 +1004,7 @@
     const v = $("#tdInput").value.trim();
     if(!v) return;
     td.items.push({text:v, done:false}); td.date = today();
-    $("#tdInput").value = ""; save(LS.td, td); paintTodo();
+    $("#tdInput").value = ""; save(LS.td, td); touch("todo"); paintTodo();
   }
   $("#tdAdd").addEventListener("click", addTodo);
   $("#tdInput").addEventListener("keydown", e => { if(e.key === "Enter") addTodo(); });
@@ -931,11 +1013,11 @@
     const i = +el.dataset.i;
     if(el.classList.contains("del")) td.items.splice(i,1);
     else td.items[i].done = !td.items[i].done;
-    save(LS.td, td); paintTodo();
+    save(LS.td, td); touch("todo"); paintTodo();
   });
-  $("#tdDaily").addEventListener("change", e => { td.daily = e.target.checked; save(LS.td, td); });
+  $("#tdDaily").addEventListener("change", e => { td.daily = e.target.checked; save(LS.td, td); touch("todo"); });
   $("#tdClear").addEventListener("click", () => {
-    td.items = td.items.filter(t => !t.done); save(LS.td, td); paintTodo();
+    td.items = td.items.filter(t => !t.done); save(LS.td, td); touch("todo"); paintTodo();
   });
 
   /* ── 메모 ── */
@@ -945,7 +1027,7 @@
   memo.addEventListener("input", () => {
     clearTimeout(memoT);
     memoT = setTimeout(() => {
-      save(LS.memo, memo.value);
+      save(LS.memo, memo.value); touch("memo");
       const s = $("#memoSaved");
       s.classList.add("on");
       setTimeout(() => s.classList.remove("on"), 1400);
@@ -1049,6 +1131,11 @@
       );
       if(!ok){ e.target.value = ""; return; }
       const s = mergeBackup(data);
+      // 불러온 내용도 동기화에 반영되도록 수정 시각 갱신
+      if(s.pins) touch("pins");
+      if(s.todos) touch("todo");
+      if(s.memo) touch("memo");
+      schedulePush();
       render(); dday(); paintTimer(); paintTodo(); paintLog();
       toast("불러왔어요.\n공부 " + hm(s.mins) + " · 즐겨찾기 " + s.pins + "개 · 할 일 " + s.todos + "개 추가"
             + (s.memo ? " · 메모 합침" : ""));
@@ -1057,8 +1144,163 @@
     reader.readAsText(f);
   });
 
+  /* ── 기기 동기화 ── */
+  const SYNC_API = "/api/sync";
+  const KEY_RE = /^[A-Za-z0-9_-]{24,80}$/;
+  let syncKey = load(LS.sync, null);
+  if(typeof syncKey !== "string" || !KEY_RE.test(syncKey)) syncKey = null;
+  let pushT = null, syncing = false, lastSyncAt = 0;
+
+  function schedulePush(){
+    if(!syncKey) return;
+    clearTimeout(pushT);
+    pushT = setTimeout(() => { pushNow().catch(() => {}); }, 3000);
+  }
+  function snapshot(){
+    return { v:1, log:load(LS.log, {}), todo:load(LS.td, null), memo:load(LS.memo, ""),
+             pins:load(LS.pin, []), dday:load(LS.dday, null), timer:load(LS.tm, null),
+             subject:load(LS.subj, null), stamps:stamps };
+  }
+  function setDot(state){
+    [$("#syncDot"), $("#dlgDot")].forEach(d => { if(d) d.className = "dot" + (state ? " " + state : ""); });
+  }
+  function newSyncKey(){
+    const cs = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+    const a = new Uint8Array(32);
+    crypto.getRandomValues(a);
+    return Array.from(a, b => cs[b & 63]).join("");
+  }
+
+  async function pushNow(){
+    if(!syncKey) return;
+    setDot("busy");
+    const r = await fetch(SYNC_API, {method:"POST", headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({key:syncKey, data:snapshot()})});
+    if(!r.ok) { setDot(""); throw new Error("push " + r.status); }
+    lastSyncAt = Date.now(); setDot("on");
+  }
+
+  // 공부 기록은 양쪽을 합치고(더 큰 값 유지), 메모·할 일·즐겨찾기는 마지막에 고친 쪽이 이긴다.
+  // 이어붙이기 방식을 쓰면 두 기기가 서로의 메모를 계속 덧붙여 무한히 길어지기 때문.
+  function mergeRemote(d){
+    let changed = false;
+
+    const rlog = (d.log && typeof d.log === "object") ? d.log : {};
+    Object.keys(rlog).forEach(day => {
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(day)) return;
+      const src = rlog[day];
+      if(!src || typeof src !== "object") return;
+      if(!log[day]) log[day] = {};
+      Object.entries(src).forEach(([sub, m]) => {
+        const n = Number(m);
+        if(!(n > 0)) return;
+        if(n > (log[day][sub] || 0)){ log[day][sub] = n; changed = true; }
+      });
+      if(!Object.keys(log[day]).length) delete log[day];
+    });
+    if(changed) save(LS.log, log);
+
+    const rs = (d.stamps && typeof d.stamps === "object") ? d.stamps : {};
+    const newer = f => Number(rs[f] || 0) > Number(stamps[f] || 0);
+
+    if(newer("todo") && d.todo && Array.isArray(d.todo.items)){
+      td = { date:d.todo.date || today(), daily:!!d.todo.daily,
+             items:d.todo.items.filter(t => t && typeof t.text === "string")
+                     .map(t => ({text:t.text, done:!!t.done})) };
+      save(LS.td, td); stamps.todo = Number(rs.todo); changed = true;
+    }
+    if(newer("memo") && typeof d.memo === "string"){
+      memo.value = d.memo; save(LS.memo, d.memo); stamps.memo = Number(rs.memo); changed = true;
+    }
+    if(newer("pins") && Array.isArray(d.pins)){
+      pins = new Set(d.pins.filter(u => typeof u === "string"));
+      save(LS.pin, [...pins]); stamps.pins = Number(rs.pins); changed = true;
+    }
+    if(newer("dday")){
+      if(typeof d.dday === "string" && d.dday) save(LS.dday, d.dday);
+      else localStorage.removeItem(LS.dday);
+      stamps.dday = Number(rs.dday); changed = true;
+    }
+    if(d.timer && d.timer.date === today() && Number(d.timer.done) > (tm.done || 0)){
+      tm.done = Number(d.timer.done); save(LS.tm, tm); changed = true;
+    }
+    save(LS.stamps, stamps);
+    return changed;
+  }
+
+  async function syncNow(quiet){
+    if(!syncKey || syncing) return;
+    syncing = true; setDot("busy");
+    try{
+      const r = await fetch(SYNC_API + "?key=" + encodeURIComponent(syncKey) + "&t=" + Date.now());
+      if(!r.ok) throw new Error("pull " + r.status);
+      const j = await r.json();
+      if(j.found && j.data && mergeRemote(j.data)){
+        render(); dday(); paintTimer(); paintTodo(); paintLog();
+      }
+      await pushNow();
+      if(!quiet) toast("동기화 완료");
+    }catch(err){
+      setDot("");
+      if(!quiet) toast("동기화에 실패했어요.\n인터넷 연결을 확인해주세요.");
+    }finally{
+      syncing = false; paintSyncUI();
+    }
+  }
+
+  function paintSyncUI(){
+    const on = !!syncKey;
+    $("#syncOff").style.display = on ? "none" : "";
+    $("#syncOn").style.display  = on ? "" : "none";
+    $("#dlgState").textContent = on
+      ? (lastSyncAt
+          ? "연결됨 · " + new Date(lastSyncAt).toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit"}) + " 동기화"
+          : "연결됨")
+      : "연결 안 됨";
+    if(on) $("#syncKeyView").value = syncKey;
+    setDot(on ? (syncing ? "busy" : (lastSyncAt ? "on" : "")) : "");
+  }
+
+  $("#syncBtn").addEventListener("click", () => { paintSyncUI(); $("#syncDlg").showModal(); });
+  $("#syncClose").addEventListener("click", () => $("#syncDlg").close());
+  $("#syncDlg").addEventListener("click", e => { if(e.target === $("#syncDlg")) $("#syncDlg").close(); });
+
+  $("#syncStart").addEventListener("click", async () => {
+    syncKey = newSyncKey(); save(LS.sync, syncKey); paintSyncUI();
+    try{ await pushNow(); toast("동기화를 시작했어요.\n다른 기기에 이 코드를 넣어주세요."); }
+    catch(err){ toast("서버에 연결하지 못했어요.\n잠시 후 다시 시도해주세요."); }
+    paintSyncUI();
+  });
+
+  $("#syncJoin").addEventListener("click", async () => {
+    const k = $("#syncJoinKey").value.trim();
+    if(!KEY_RE.test(k)){ toast("코드 형식이 올바르지 않아요."); return; }
+    syncKey = k; save(LS.sync, syncKey); $("#syncJoinKey").value = "";
+    paintSyncUI();
+    await syncNow(false);
+  });
+
+  $("#syncCopy").addEventListener("click", async () => {
+    try{ await navigator.clipboard.writeText(syncKey); toast("코드를 복사했어요."); }
+    catch(err){ $("#syncKeyView").select(); toast("코드가 선택됐어요. 복사해주세요."); }
+  });
+
+  $("#syncNowBtn").addEventListener("click", () => syncNow(false));
+
+  $("#syncOffBtn").addEventListener("click", () => {
+    if(!confirm("이 기기의 동기화를 끊을까요?\n\n기록은 이 기기에 그대로 남아요.\n다시 연결하려면 같은 코드를 넣으면 됩니다.")) return;
+    syncKey = null; localStorage.removeItem(LS.sync);
+    clearTimeout(pushT); lastSyncAt = 0; paintSyncUI(); toast("동기화를 껐어요.");
+  });
+
+  // 다른 기기에서 공부하다 돌아왔을 때 최신 내용 반영
+  document.addEventListener("visibilitychange", () => {
+    if(document.visibilityState === "visible" && syncKey && Date.now() - lastSyncAt > 20000) syncNow(true);
+  });
+
   /* ── 시작 ── */
-  render(); dday(); paintTimer(); paintTodo(); paintLog();
+  render(); dday(); paintTimer(); paintTodo(); paintLog(); paintSyncUI();
+  if(syncKey) syncNow(true);
   // 잔디밭은 최신 주가 보이도록 오른쪽 끝으로
   const hs = document.querySelector(".heat-scroll");
   hs.scrollLeft = hs.scrollWidth;

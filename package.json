@@ -1,0 +1,10 @@
+{
+  "name": "cpa-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "회계사 시험 준비 대시보드",
+  "dependencies": {
+    "@vercel/blob": "^2.0.0"
+  }
+}
