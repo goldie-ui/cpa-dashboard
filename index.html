@@ -134,7 +134,7 @@
   .quote:hover .next{opacity:1}
 
   /* ── 도구 3종 ── */
-  .decks{display:grid;grid-template-columns:repeat(auto-fit,minmax(272px,1fr));gap:14px;margin-top:16px}
+  .decks{display:grid;grid-template-columns:repeat(auto-fit,minmax(272px,1fr));gap:14px;margin-top:32px}
   .deck{padding:16px 18px 17px;display:flex;flex-direction:column;gap:11px;min-height:236px}
   .deck-hd{display:flex;align-items:center;justify-content:space-between;gap:8px}
   .deck-hd h2{margin:0;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
@@ -264,7 +264,7 @@
   .log-add input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
 
   /* ── 검색 ── */
-  .toolbar{display:flex;flex-wrap:wrap;gap:11px;align-items:center;margin-top:26px;margin-bottom:8px}
+  .toolbar{display:flex;flex-wrap:wrap;gap:11px;align-items:center;margin-top:20px;margin-bottom:8px}
   .search{flex:1;min-width:210px;position:relative}
   .search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:16px;height:16px;
     stroke:var(--ink-3);fill:none;pointer-events:none;z-index:1}
@@ -422,6 +422,19 @@
     <span class="next" aria-hidden="true">다음 →</span>
   </div>
 
+
+  <div class="toolbar">
+    <div class="search">
+      <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="q" type="search" placeholder="사이트 검색 (예: 재무회계, 나무, 카페)" autocomplete="off" aria-label="사이트 검색">
+    </div>
+    <span class="count" id="count"></span>
+  </div>
+
+  <div id="pinnedSec"></div>
+  <div id="sections"></div>
+  <div class="empty" id="empty">검색 결과가 없어요.</div>
+
   <div class="decks">
 
     <!-- 타이머 -->
@@ -528,18 +541,6 @@
       <button class="btn ghost" id="undoBtn" type="button" style="display:none">되돌리기</button>
     </div>
   </div>
-
-  <div class="toolbar">
-    <div class="search">
-      <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-      <input id="q" type="search" placeholder="사이트 검색 (예: 재무회계, 나무, 카페)" autocomplete="off" aria-label="사이트 검색">
-    </div>
-    <span class="count" id="count"></span>
-  </div>
-
-  <div id="pinnedSec"></div>
-  <div id="sections"></div>
-  <div class="empty" id="empty">검색 결과가 없어요.</div>
 
   <footer class="glass">
     <span class="priv">
